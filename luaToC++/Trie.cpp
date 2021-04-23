@@ -4,9 +4,9 @@
 #include "map"
 
 #ifdef linux 
-const int maxspace = 4;
-#else
 const int maxspace = 3;
+#else
+const int maxspace = 2;
 #endif
 
 using namespace std;
@@ -42,7 +42,7 @@ public:
 		{
 			string s;
 			bool b = false;
-			if (~(str.at(i) >> 8) == 0)
+			if (~(str.at(i) >> (maxspace * 8)) == 0)
 			{
 				s = str.substr(i, maxspace);
 				b = true;
@@ -55,7 +55,7 @@ public:
 			{
 				for (unsigned int j = i; j < str.length(); j++)
 				{
-					if (~(str.at(j) >> 8) == 0)
+					if (~(str.at(j) >> (maxspace * 8)) == 0)
 					{
 						s = str.substr(j, maxspace);
 						j += maxspace - 1;
@@ -92,7 +92,7 @@ public:
 		{
 			j = i;
 			Node* curroot = root;
-			if (~(str.at(i) >> 8) == 0)
+			if (~(str.at(i) >> (maxspace * 8)) == 0)
 			{
 				s = str.substr(i, maxspace);
 				j += maxspace;
@@ -109,7 +109,7 @@ public:
 				for (unsigned int k = j; k < str.length(); )
 				{
 					std::string curs;
-					if (~(str.at(k) >> 8) == 0)
+					if (~(str.at(k) >> (maxspace * 8)) == 0)
 					{
 						curs = str.substr(k, maxspace);
 						k += maxspace;
@@ -134,7 +134,13 @@ public:
 						break;
 					}
 				}
-				newstr += "**";
+				if (maxend > j)
+				{
+					newstr += "**";
+				}
+				else {
+					newstr += s;
+				}
 				i = maxend;
 			}
 			else {

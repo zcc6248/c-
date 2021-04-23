@@ -15,10 +15,11 @@ trie:insert("温加宝")
 trie:insert("温x")
 trie:insert("温jia宝")
 trie:insert("温宝宝")
+trie:insert("按摩棒")
+trie:insert("ddd")
 
 
-
-local x = trie:match("习近平按暴奸时暴奸发放")
+local x = trie:match("习近平按暴奸时暴奸发dd放")
 
 print(x)
 
