@@ -84,7 +84,7 @@ public:
 			}
 		}
 	}
-	string match(Node* root, std::string str)
+	string match(std::string str, std::string args)
 	{
 		std::string s, newstr = "";
 		unsigned int i = 0, j = 0;
@@ -136,7 +136,7 @@ public:
 				}
 				if (maxend > j)
 				{
-					newstr += "**";
+					newstr += args;
 				}
 				else {
 					newstr += s;
@@ -149,6 +149,62 @@ public:
 			}
 		}
 		return newstr;
+	}
+	bool matchbool(std::string str)
+	{
+		std::string s;
+		unsigned int i = 0, j = 0;
+		while (i < str.length())
+		{
+			j = i;
+			Node* curroot = root;
+			if (~(str.at(i) >> (maxspace * 8)) == 0)
+			{
+				s = str.substr(i, maxspace);
+				j += maxspace;
+			}
+			else {
+				s = str.substr(i, 1);
+				j += 1;
+			}
+			Node* findnode = _find(curroot, s);
+			if (findnode)
+			{
+				curroot = findnode;
+				for (unsigned int k = j; k < str.length(); )
+				{
+					std::string curs;
+					if (~(str.at(k) >> (maxspace * 8)) == 0)
+					{
+						curs = str.substr(k, maxspace);
+						k += maxspace;
+					}
+					else {
+						curs = str.substr(k, 1);
+						k += 1;
+					}
+					Node* findnode = _find(curroot, curs);
+					if (findnode)
+					{
+						if (findnode->color == Color::Red)
+						{
+							return true;
+						}
+						else {
+							curroot = findnode;
+						}
+					}
+					else {
+						return false;
+					}
+				}
+				return false;
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
 	}
 	void preTree(Node* node)
 	{
@@ -232,9 +288,23 @@ int trie_match(lua_State* L) {
 	luaL_argcheck(L, node != NULL, 1, "invalid user data");
 
 	luaL_checktype(L, -1, LUA_TSTRING);
-	string param = lua_tostring(L, -1);
-	string s = (*node)->match((*node)->root, param);
+	string args = lua_tostring(L, -1);
+	luaL_checktype(L, -2, LUA_TSTRING);
+	string str = lua_tostring(L, -2);
+
+	string s = (*node)->match(str, args);
 	lua_pushstring(L, s.c_str());
+	return 1;
+}
+
+int trie_matchbool(lua_State* L) {
+	TrieNode** node = (TrieNode**)lua_touserdata(L, 1);
+	luaL_argcheck(L, node != NULL, 1, "invalid user data");
+
+	luaL_checktype(L, -1, LUA_TSTRING);
+	string param = lua_tostring(L, -1);
+	bool s = (*node)->matchbool(param);
+	lua_pushboolean(L, s);
 	return 1;
 }
 
@@ -255,6 +325,7 @@ const luaL_Reg lib_m[] = {
 const luaL_Reg lib_f[] = {
 	{"insert", trie_insert},
 	{"match", trie_match},
+	{"matchbool", trie_matchbool},
 	{"print", trie_print},
 	{NULL, NULL},
 };

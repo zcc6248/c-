@@ -2,24 +2,24 @@
 #include "lua.hpp"
 #include "tool.h"
 
-/*luaºÍc++Í¨ÐÅ¹ØÏµ£¬¾ßÌåÈçluaAndC++.png
-                   luaÐéÄâ»ú
+/*luaå’Œc++é€šä¿¡å…³ç³»ï¼Œå…·ä½“å¦‚luaAndC++.png
+                   luaè™šæ‹Ÿæœº
                  -----------
-                |  lua³ÌÐò  |
-    lua         |  ÐéÄâÕ»   |      c++/c
-                | È«¾Ö¶ÓÁÐ  |
+                |  luaç¨‹åº  |
+    lua         |  è™šæ‹Ÿæ ˆ   |      c++/c
+                | å…¨å±€é˜Ÿåˆ—  |
                  -----------
-    luaºÍc++Í¨ÐÅ£¬Í¨¹ýluaÖÐµÄÐéÄâÕ»½øÐÐ£¬Éè¼ÆÕßÊÇÕ¾ÔÚc++Î»ÖÃ½øÐÐ¿ª·¢µÄËùÒÔ
-    c++¶Ë»ñµÃluaÖÐµÄÊý¾Ý£¬Ê×ÏÈ½«luaÖÐµÄÊý¾ÝÊ¹ÓÃgetÏµÁÐº¯Êý´ÓÈ«¾Ö¶ÓÁÐ·ÅÈëÐéÄâÕ»ÖÐ£¬ÔÙÍ¨¹ýis/to»ñµÃ
-    lua¶Ë»ñµÃc++ÖÐµÄÊý¾Ý£¬Ò²ÊÇÕ¾ÔÚc++¶Ë¿´£¬ÔÚc++´úÂëÖÐ£¬Ê¹ÓÃpushÏµÁÐº¯Êý½«Êý¾Ý·ÅÈëÐéÄâÕ»ÖÐ£¬ÔÙÊ¹ÓÃsetÏµÁÐº¯Êý½«Æä·ÅÈëÈ«¾Ö¶ÓÁÐ
-    lua³ÌÐò¿ÉÒÔÓÐ¶à¸ö£¬µÈÍ¬ÓÚlua_State
+    luaå’Œc++é€šä¿¡ï¼Œé€šè¿‡luaä¸­çš„è™šæ‹Ÿæ ˆè¿›è¡Œï¼Œè®¾è®¡è€…æ˜¯ç«™åœ¨c++ä½ç½®è¿›è¡Œå¼€å‘çš„æ‰€ä»¥
+    c++ç«¯èŽ·å¾—luaä¸­çš„æ•°æ®ï¼Œé¦–å…ˆå°†luaä¸­çš„æ•°æ®ä½¿ç”¨getç³»åˆ—å‡½æ•°ä»Žå…¨å±€é˜Ÿåˆ—æ”¾å…¥è™šæ‹Ÿæ ˆä¸­ï¼Œå†é€šè¿‡is/toèŽ·å¾—
+    luaç«¯èŽ·å¾—c++ä¸­çš„æ•°æ®ï¼Œä¹Ÿæ˜¯ç«™åœ¨c++ç«¯çœ‹ï¼Œåœ¨c++ä»£ç ä¸­ï¼Œä½¿ç”¨pushç³»åˆ—å‡½æ•°å°†æ•°æ®æ”¾å…¥è™šæ‹Ÿæ ˆä¸­ï¼Œå†ä½¿ç”¨setç³»åˆ—å‡½æ•°å°†å…¶æ”¾å…¥å…¨å±€é˜Ÿåˆ—
+    luaç¨‹åºå¯ä»¥æœ‰å¤šä¸ªï¼Œç­‰åŒäºŽlua_State
 
-    c++/c ====¡· lua
-    c++µÄÊý¾ÝÔÚluaÖÐµ÷ÓÃ
+    c++/c ====ã€‹ lua
+    c++çš„æ•°æ®åœ¨luaä¸­è°ƒç”¨
 */
 
-/*  ÓÐÎÞ²ÎÊý¶¼±ØÐëÊ¹ÓÃÕâÖÖ½á¹¹£¬ÒòÎªtypedef int (*lua_CFunction) (lua_State *L);
-Ã¿´Îµ÷ÓÃ¶¼»áÐÂ½¨Á¢Ò»¸ölua_State£¬Ö»±£Áô´Ë·½·¨ÖÐµÄ²ÎÊýºÍ·µ»ØÖµµÈ¡£return0±íÊ¾Ã»ÓÐ·µ»ØÖµ£¬Õ»ÖÐÊý¾Ý¶¼ÎªÔàÊý¾Ý
+/*  æœ‰æ— å‚æ•°éƒ½å¿…é¡»ä½¿ç”¨è¿™ç§ç»“æž„ï¼Œå› ä¸ºtypedef int (*lua_CFunction) (lua_State *L);
+æ¯æ¬¡è°ƒç”¨éƒ½ä¼šæ–°å»ºç«‹ä¸€ä¸ªlua_Stateï¼Œåªä¿ç•™æ­¤æ–¹æ³•ä¸­çš„å‚æ•°å’Œè¿”å›žå€¼ç­‰ã€‚return0è¡¨ç¤ºæ²¡æœ‰è¿”å›žå€¼ï¼Œæ ˆä¸­æ•°æ®éƒ½ä¸ºè„æ•°æ®
 int hello(lua_State* L)
 {
     return 0;
@@ -53,15 +53,26 @@ int hello3(lua_State* L)
 
 int main()
 {
-    //µÈÍ¬ÓÚÐÂ½¨lua³ÌÐò
+    //ç­‰åŒäºŽæ–°å»ºluaç¨‹åº
     lua_State* L = luaL_newstate();
-    //´ò¿ªluaÔËÐÐÐèÒªµÄ¿â
+    //æ‰“å¼€luaè¿è¡Œéœ€è¦çš„åº“
     luaL_openlibs(L);
-    //Êä³öÕ»ÐÅÏ¢
+    //è¾“å‡ºæ ˆä¿¡æ¯
     stackDump(L);
 
-    //´Óc++£¬ÍùÐéÄâÕ»ÖÐÍÆÊý¾Ý£¨ÏÈ½øºó³ö£©
-#if 0 //lua¶Ë»ñµÃÈ«¾Ö±äÁ¿
+
+    luaL_newmetatable(L, "aaaaaa");
+    lua_pushstring(L, "__index");
+    lua_pushvalue(L, -2);
+    lua_settable(L, -3);
+
+    lua_newuserdata(L, 10);
+    luaL_getmetatable(L, "aaaaaa");
+    lua_setmetatable(L, -2);
+
+    stackDump(L);
+    //ä»Žc++ï¼Œå¾€è™šæ‹Ÿæ ˆä¸­æŽ¨æ•°æ®ï¼ˆå…ˆè¿›åŽå‡ºï¼‰
+#if 0 //luaç«¯èŽ·å¾—å…¨å±€å˜é‡
     lua_pushstring(L, "aaaa");
     lua_pushinteger(L, 22222);
     lua_pushboolean(L, true);
@@ -69,7 +80,7 @@ int main()
     lua_pushstring(L, "cccc");
     stackDump(L);
 
-    //´ÓÕ»¶¥½«Êý¾ÝÍÆÈëluaÈ«¾Ö±äÁ¿²¢³öÕ»£¨µÚ¶þ¸ö²ÎÊýÎª±äÁ¿Ãû£©
+    //ä»Žæ ˆé¡¶å°†æ•°æ®æŽ¨å…¥luaå…¨å±€å˜é‡å¹¶å‡ºæ ˆï¼ˆç¬¬äºŒä¸ªå‚æ•°ä¸ºå˜é‡åï¼‰
     lua_setglobal(L, "str1");
     lua_setglobal(L, "str2");
     lua_setglobal(L, "bool");
@@ -77,51 +88,52 @@ int main()
     lua_setglobal(L, "str3");
     stackDump(L);
 
-    //±àÒë²¢ÔËÐÐluaÎÄ¼þ
+    //ç¼–è¯‘å¹¶è¿è¡Œluaæ–‡ä»¶
     //luaL_dofile(L, "main02.lua");
 #endif
 
-#if 1 //lua¶Ë»ñµÃ±í
+#if 0 //luaç«¯èŽ·å¾—è¡¨
     lua_newtable(L);
     stackDump(L);
 
     lua_pushstring(L, "name");
-    lua_pushstring(L, "ÕÅÈý");
-    //°ÑÕ»¶¥ÔªËØ×öÎªvalue£¬ÏÂÒ»¸öÔªËØ×öÎªkey,ÉèÖÃµ½Ë÷ÒýÖ¸ÏòµÄtable,×îºóÁ½¸öÈ«²¿³öÕ»
+    lua_pushstring(L, "å¼ ä¸‰");
+
+    //æŠŠæ ˆé¡¶å…ƒç´ åšä¸ºvalueï¼Œä¸‹ä¸€ä¸ªå…ƒç´ åšä¸ºkey,è®¾ç½®åˆ°ç´¢å¼•æŒ‡å‘çš„table,æœ€åŽä¸¤ä¸ªå…¨éƒ¨å‡ºæ ˆ
     lua_settable(L, 1);
 
     lua_pushboolean(L, false);  
-    //½«Õ»¶¥ÔªËØ×öÎªvalue¡£µÈÍ¬ÓÚlua_pushstring + lua_settable
+    //å°†æ ˆé¡¶å…ƒç´ åšä¸ºvalueã€‚ç­‰åŒäºŽlua_pushstring + lua_settable
     lua_setfield(L, 1, "type");
     stackDump(L);
 
-    //´ÓÕ»¶¥½«Êý¾ÝÍÆÈëluaÈ«¾Ö±äÁ¿²¢³öÕ»£¨µÚ¶þ¸ö²ÎÊýÎª±äÁ¿Ãû£©
+    //ä»Žæ ˆé¡¶å°†æ•°æ®æŽ¨å…¥luaå…¨å±€å˜é‡å¹¶å‡ºæ ˆï¼ˆç¬¬äºŒä¸ªå‚æ•°ä¸ºå˜é‡åï¼‰
     lua_setglobal(L, "tab");
 
-    //±àÒë²¢ÔËÐÐluaÎÄ¼þ
+    //ç¼–è¯‘å¹¶è¿è¡Œluaæ–‡ä»¶
     //luaL_dofile(L, "main02.lua");
 #endif
    
-#if 1 //lua¶Ë»ñµÃÎÞ²ÎÎÞ·µ»ØÖµº¯Êý
+#if 0 //luaç«¯èŽ·å¾—æ— å‚æ— è¿”å›žå€¼å‡½æ•°
     lua_pushcfunction(L, hello0);
     stackDump(L);
 
-    //´ÓÕ»¶¥½«Êý¾ÝÍÆÈëluaÈ«¾Ö±äÁ¿²¢³öÕ»£¨µÚ¶þ¸ö²ÎÊýÎª±äÁ¿Ãû£©
+    //ä»Žæ ˆé¡¶å°†æ•°æ®æŽ¨å…¥luaå…¨å±€å˜é‡å¹¶å‡ºæ ˆï¼ˆç¬¬äºŒä¸ªå‚æ•°ä¸ºå˜é‡åï¼‰
     lua_setglobal(L, "fun");
     stackDump(L);
 
-    //lua¶Ë»ñµÃÓÐ²ÎÎÞ·µ»ØÖµº¯Êý
+    //luaç«¯èŽ·å¾—æœ‰å‚æ— è¿”å›žå€¼å‡½æ•°
     lua_register(L, "fun2", hello2);
 
-    //lua¶Ë»ñµÃÓÐ²ÎÓÐ·µ»ØÖµº¯Êý
+    //luaç«¯èŽ·å¾—æœ‰å‚æœ‰è¿”å›žå€¼å‡½æ•°
     lua_register(L, "fun3", hello3);
 
-    //±àÒë²¢ÔËÐÐluaÎÄ¼þ
+    //ç¼–è¯‘å¹¶è¿è¡Œluaæ–‡ä»¶
     luaL_dofile(L, "main02.lua");
     stackDump(L);
     /*
-    ËµÃ÷²»Í¬lua_StateÐéÄâÕ»ÊÇ²»Í¬µÄ£¬ lua_StateÖÐµÄÐéÄâÕ»£¬ÆäÖ»ÊÇ¶ÔÈ«¾ÖÕ»ÖÐÄ³Ò»¶ÎÕ»µÄË÷Òý£¬ËùÒÔlua_State¾ÍÏàµ±ÓÚÒ»¸ö¶ÔÏó¡£²»Í¬¶ÔÏóÓÐ×Ô¼ºµÄÊý¾Ý¡£
-    ¿ÉÒÔ¿´³öÉÏÃæÊä³öµÄÕ»ÐÅÏ¢Îª¿Õ£¬µ«ÔÚhello3ÖÐÊä³öµÄÕ»ÐÅÏ¢ÓÐ4¸ö£¬Æä·Ö±ð±íÊ¾ÔÚ´Ëlua_State¶ÔÏóÖÐ£¬´Ólua¶Ë´«ÈëµÄÁ½¸ö²ÎÊýºÍÔÚc++¶Ëpush½øÈ¥µÄÁ½¸ö²ÎÊý
+    è¯´æ˜Žä¸åŒlua_Stateè™šæ‹Ÿæ ˆæ˜¯ä¸åŒçš„ï¼Œ lua_Stateä¸­çš„è™šæ‹Ÿæ ˆï¼Œå…¶åªæ˜¯å¯¹å…¨å±€æ ˆä¸­æŸä¸€æ®µæ ˆçš„ç´¢å¼•ï¼Œæ‰€ä»¥lua_Stateå°±ç›¸å½“äºŽä¸€ä¸ªå¯¹è±¡ã€‚ä¸åŒå¯¹è±¡æœ‰è‡ªå·±çš„æ•°æ®ã€‚
+    å¯ä»¥çœ‹å‡ºä¸Šé¢è¾“å‡ºçš„æ ˆä¿¡æ¯ä¸ºç©ºï¼Œä½†åœ¨hello3ä¸­è¾“å‡ºçš„æ ˆä¿¡æ¯æœ‰4ä¸ªï¼Œå…¶åˆ†åˆ«è¡¨ç¤ºåœ¨æ­¤lua_Stateå¯¹è±¡ä¸­ï¼Œä»Žluaç«¯ä¼ å…¥çš„ä¸¤ä¸ªå‚æ•°å’Œåœ¨c++ç«¯pushè¿›åŽ»çš„ä¸¤ä¸ªå‚æ•°
     */
 #endif
 

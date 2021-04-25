@@ -19,8 +19,10 @@ trie:insert("按摩棒")
 trie:insert("ddd")
 
 
-local x = trie:match("习近平按暴奸时暴奸发dd放")
+local x = trie:match("习近平按暴奸时暴奸发dd放", "&&")
 
 print(x)
+local xxx = trie:matchbool("习")
 
+print(xxx)
 print(trie:print())
